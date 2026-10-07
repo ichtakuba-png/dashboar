@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GKIET Discord Bot Dashboard</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+ --bg:#0b0d12;
+ --panel:#11151d;
+ --panel2:#171c26;
+ --line:#272e3b;
+ --text:#f4f6fb;
+ --muted:#8991a3;
+ --blue:#5865f2;
+ --green:#23d18b;
+ --red:#ed4245;
+}
+
+body{
+ font-family:Inter,Arial,sans-serif;
+ background:var(--bg);
+ color:var(--text);
+ min-height:100vh;
+}
+
+button,input,textarea,select{font:inherit}
+
+button{
+ cursor:pointer;
+ border:0;
+}
+
+.hidden{display:none!important}
+
+.app{
+ display:flex;
+ min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+ width:245px;
+ background:#0f1218;
+ border-right:1px solid var(--line);
+ padding:20px 14px;
+ position:fixed;
+ top:0;
+ bottom:0;
+ left:0;
+}
+
+.logo{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:10px;
+ margin-bottom:25px;
+}
+
+.logoIcon{
+ width:42px;
+ height:42px;
+ border-radius:12px;
+ background:linear-gradient(135deg,#5865f2,#8b5cf6);
+ display:grid;
+ place-items:center;
+ font-weight:900;
+}
+
+.logo b{
+ font-size:16px;
+}
+
+.logo small{
+ display:block;
+ color:var(--muted);
+ font-size:11px;
+ margin-top:3px;
+}
+
+.nav{
+ display:flex;
+ flex-direction:column;
+ gap:6px;
+}
+
+.nav button{
+ width:100%;
+ text-align:left;
+ color:#9299aa;
+ background:transparent;
+ padding:12px 14px;
+ border-radius:9px;
+ transition:.2s;
+}
+
+.nav button:hover,
+.nav button.active{
+ background:#1c2230;
+ color:white;
+}
+
+.sidebarBottom{
+ position:absolute;
+ bottom:18px;
+ left:14px;
+ right:14px;
+}
+
+.connection{
+ padding:13px;
+ border:1px solid var(--line);
+ background:#151922;
+ border-radius:10px;
+}
+
+.connection div{
+ display:flex;
+ align-items:center;
+ gap:8px;
+ font-size:12px;
+}
+
+.dot{
+ width:9px;
+ height:9px;
+ border-radius:50%;
+ background:#666;
+}
+
+.dot.on{
+ background:var(--green);
+ box-shadow:0 0 10px var(--green);
+}
+
+/* MAIN */
+
+.main{
+ margin-left:245px;
+ width:calc(100% - 245px);
+}
+
+.top{
+ height:68px;
+ border-bottom:1px solid var(--line);
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:0 28px;
+ background:#0d1016;
+}
+
+.topTitle{
+ font-size:18px;
+ font-weight:800;
+}
+
+.user{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.avatar{
+ width:35px;
+ height:35px;
+ border-radius:50%;
+ background:linear-gradient(135deg,#5865f2,#8b5cf6);
+ display:grid;
+ place-items:center;
+ font-weight:900;
+}
+
+.content{
+ padding:28px;
+ max-width:1450px;
+}
+
+/* LOGIN */
+
+.login{
+ max-width:560px;
+ margin:70px auto;
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:18px;
+ padding:30px;
+ box-shadow:0 20px 70px #0007;
+}
+
+.login h1{
+ font-size:27px;
+ margin-bottom:8px;
+}
+
+.login p{
+ color:var(--muted);
+ line-height:1.6;
+ margin-bottom:20px;
+}
+
+.warning{
+ background:#332614;
+ border:1px solid #684d22;
+ color:#e8c478;
+ padding:13px;
+ border-radius:10px;
+ font-size:13px;
+ line-height:1.5;
+ margin-bottom:18px;
+}
+
+.input,
+.textarea,
+.select{
+ width:100%;
+ background:#0c0f14;
+ color:white;
+ border:1px solid #303746;
+ outline:none;
+ padding:12px;
+ border-radius:9px;
+ margin-bottom:11px;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus{
+ border-color:var(--blue);
+}
+
+.textarea{
+ min-height:120px;
+ resize:vertical;
+}
+
+.btn{
+ padding:11px 16px;
+ border-radius:9px;
+ font-weight:750;
+ transition:.2s;
+}
+
+.primary{
+ background:var(--blue);
+ color:white;
+}
+
+.primary:hover{
+ background:#4752c4;
+}
+
+.secondary{
+ background:#252b37;
+ color:white;
+}
+
+.danger{
+ background:var(--red);
+ color:white;
+}
+
+.full{
+ width:100%;
+}
+
+/* PAGES */
+
+.page{display:none}
+.page.active{display:block}
+
+.pageTitle{
+ margin-bottom:20px;
+}
+
+.pageTitle h1{
+ font-size:26px;
+}
+
+.pageTitle p{
+ color:var(--muted);
+ margin-top:5px;
+}
+
+/* CARDS */
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:15px;
+ margin-bottom:20px;
+}
+
+.card{
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:14px;
+ padding:19px;
+}
+
+.cardLabel{
+ color:var(--muted);
+ font-size:13px;
+}
+
+.cardValue{
+ font-size:29px;
+ font-weight:900;
+ margin-top:8px;
+}
+
+.cardSub{
+ color:#687184;
+ font-size:12px;
+ margin-top:5px;
+}
+
+/* GRID */
+
+.grid2{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:18px;
+}
+
+.panel{
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:14px;
+ overflow:hidden;
+}
+
+.panelHead{
+ padding:17px 19px;
+ border-bottom:1px solid var(--line);
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.panelHead h2{
+ font-size:15px;
+}
+
+.panelBody{
+ padding:18px;
+}
+
+/* LIST */
+
+.list{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+}
+
+.item{
+ padding:12px;
+ background:#171c25;
+ border:1px solid #252c39;
+ border-radius:9px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.itemLeft{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ min-width:0;
+}
+
+.icon{
+ width:34px;
+ height:34px;
+ border-radius:9px;
+ background:#252b38;
+ display:grid;
+ place-items:center;
+ flex:none;
+}
+
+.itemName{
+ font-weight:700;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.itemSub{
+ color:var(--muted);
+ font-size:11px;
+ margin-top:3px;
+}
+
+.badge{
+ padding:4px 8px;
+ background:#202633;
+ border-radius:20px;
+ color:#aeb5c5;
+ font-size:11px;
+}
+
+/* SAY */
+
+.sayBox{
+ display:grid;
+ grid-template-columns:250px 1fr;
+ gap:12px;
+}
+
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:12px;
+}
+
+/* LOG */
+
+.log{
+ background:#090b0f;
+ border:1px solid #222733;
+ border-radius:10px;
+ padding:14px;
+ height:300px;
+ overflow:auto;
+ font-family:monospace;
+ font-size:12px;
+ line-height:1.7;
+ color:#aeb6c7;
+}
+
+.log .ok{color:#54d69b}
+.log .err{color:#ff6868}
+.log .info{color:#8ea2ff}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+ .sidebar{
+  width:70px;
+  padding:15px 8px;
+ }
+
+ .logo b,
+ .logo small,
+ .nav button span,
+ .connection span{
+  display:none;
+ }
+
+ .logo{
+  justify-content:center;
+ }
+
+ .nav button{
+  text-align:center;
+  padding:12px 5px;
+ }
+
+ .connection{
+  display:flex;
+  justify-content:center;
+ }
+
+ .main{
+  margin-left:70px;
+  width:calc(100% - 70px);
+ }
+
+ .stats{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .grid2{
+  grid-template-columns:1fr;
+ }
+
+ .sayBox{
+  grid-template-columns:1fr;
+ }
+}
+
+@media(max-width:550px){
+
+ .content{
+  padding:16px;
+ }
+
+ .top{
+  padding:0 16px;
+ }
+
+ .stats{
+  grid-template-columns:1fr;
+ }
+
+ .topTitle{
+  font-size:15px;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loginScreen" class="login">
+
+ <h1>🤖 GKIET Bot Dashboard</h1>
+
+ <p>
+   Kết nối dashboard với Discord Bot của bạn.
+   Token chỉ được giữ trong bộ nhớ của tab hiện tại.
+ </p>
+
+ <div class="warning">
+   ⚠️ Không chia sẻ bot token cho người khác.
+   File HTML này không lưu token vào localStorage/cookie.
+   Reload hoặc đóng tab sẽ xóa token khỏi bộ nhớ trang.
+ </div>
+
+ <input
+   id="token"
+   class="input"
+   type="password"
+   placeholder="Discord Bot Token"
+   autocomplete="off"
+ >
+
+ <button class="btn primary full" onclick="connectBot()">
+   🔐 Kết nối Bot
+ </button>
+
+ <p id="loginError"
+    style="color:#ff6868;margin-top:12px;display:none">
+ </p>
+
+</div>
+
+
+<div id="app" class="app hidden">
+
+ <aside class="sidebar">
+
+  <div class="logo">
+   <div class="logoIcon">G</div>
+   <div>
+    <b>GKIET PANEL</b>
+    <small>Discord Manager</small>
+   </div>
+  </div>
+
+  <nav class="nav">
+
+   <button class="active" onclick="page('dashboard',this)">
+    🏠 <span>Dashboard</span>
+   </button>
+
+   <button onclick="page('servers',this)">
+    🏢 <span>Servers</span>
+   </button>
+
+   <button onclick="page('channels',this)">
+    💬 <span>Channels</span>
+   </button>
+
+   <button onclick="page('say',this)">
+    📢 <span>Bot Say</span>
+   </button>
+
+   <button onclick="page('logs',this)">
+    📜 <span>Logs</span>
+   </button>
+
+  </nav>
+
+  <div class="sidebarBottom">
+
+   <div class="connection">
+    <div>
+     <i id="statusDot" class="dot"></i>
+     <span id="statusText">Disconnected</span>
+    </div>
+   </div>
+
+  </div>
+
+ </aside>
+
+
+ <main class="main">
+
+  <header class="top">
+
+   <div class="topTitle">
+    Discord Bot Dashboard
+   </div>
+
+   <div class="user">
+
+    <div id="botAvatar" class="avatar">B</div>
+
+    <div>
+     <b id="botName">Bot</b>
+     <div id="botTag"
+          style="font-size:11px;color:#858c9d">
+      offline
+     </div>
+    </div>
+
+   </div>
+
+  </header>
+
+
+  <div class="content">
+
+   <!-- DASHBOARD -->
+
+   <section id="dashboard" class="page active">
+
+    <div class="pageTitle">
+     <h1>Dashboard</h1>
+     <p>Thông tin Discord bot hiện tại.</p>
+    </div>
+
+    <div class="stats">
+
+     <div class="card">
+      <div class="cardLabel">Bot Status</div>
+      <div id="statStatus" class="cardValue">OFFLINE</div>
+      <div class="cardSub">Discord connection</div>
+     </div>
+
+     <div class="card">
+      <div class="cardLabel">Servers</div>
+      <div id="statServers" class="cardValue">0</div>
+      <div class="cardSub">Guilds</div>
+     </div>
+
+     <div class="card">
+      <div class="cardLabel">Channels</div>
+      <div id="statChannels" class="cardValue">0</div>
+      <div class="cardSub">Visible channels</div>
+     </div>
+
+     <div class="card">
+      <div class="cardLabel">API Latency</div>
+      <div id="statLatency" class="cardValue">—</div>
+      <div class="cardSub">Discord API</div>
+     </div>
+
+    </div>
+
+
+    <div class="grid2">
+
+     <div class="panel">
+
+      <div class="panelHead">
+       <h2>🤖 Bot Information</h2>
+      </div>
+
+      <div class="panelBody">
+
+       <div class="list">
+
+        <div class="item">
+         <div class="itemLeft">
+          <div class="icon">👤</div>
+          <div>
+           <div class="itemName">Username</div>
+           <div id="infoUsername"
+                class="itemSub">—</div>
+          </div>
+         </div>
+        </div>
+
+        <div class="item">
+         <div class="itemLeft">
+          <div class="icon">🆔</div>
+          <div>
+           <div class="itemName">Bot ID</div>
+           <div id="infoId"
+                class="itemSub">—</div>
+          </div>
+         </div>
+        </div>
+
+        <div class="item">
+         <div class="itemLeft">
+          <div class="icon">⚡</div>
+          <div>
+           <div class="itemName">Application</div>
+           <div id="infoApp"
+                class="itemSub">—</div>
+          </div>
+         </div>
+        </div>
+
+       </div>
+
+      </div>
+
+     </div>
+
+
+     <div class="panel">
+
+      <div class="panelHead">
+       <h2>⚡ Quick Actions</h2>
+      </div>
+
+      <div class="panelBody">
+
+       <div class="actions">
+
+        <button class="btn primary"
+                onclick="page('say')">
+         📢 Bot Say
+        </button>
+
+        <button class="btn secondary"
+                onclick="loadAll()">
+         🔄 Refresh
+        </button>
+
+        <button class="btn danger"
+                onclick="disconnect()">
+         Logout
+        </button>
+
+       </div>
+
+      </div>
+
+     </div>
+
+    </div>
+
+   </section>
+
+
+   <!-- SERVERS -->
+
+   <section id="servers" class="page">
+
+    <div class="pageTitle">
+     <h1>Servers</h1>
+     <p>Guild mà bot đang tham gia.</p>
+    </div>
+
+    <div class="panel">
+
+     <div class="panelHead">
+      <h2>🏢 Guilds</h2>
+      <button class="btn secondary"
+              onclick="loadGuilds()">
+       Refresh
+      </button>
+     </div>
+
+     <div class="panelBody">
+
+      <div id="guildList" class="list">
+       <div class="item">Đang tải...</div>
+      </div>
+
+     </div>
+
+    </div>
+
+   </section>
+
+
+   <!-- CHANNELS -->
+
+   <section id="channels" class="page">
+
+    <div class="pageTitle">
+     <h1>Channels</h1>
+     <p>Các channel mà bot có thể truy cập.</p>
+    </div>
+
+    <div class="panel">
+
+     <div class="panelHead">
+      <h2>💬 Channels</h2>
+     </div>
+
+     <div class="panelBody">
+
+      <select id="channelGuild"
+              class="select"
+              onchange="loadChannels()">
+      </select>
+
+      <div id="channelList" class="list">
+       <div class="item">Chọn server.</div>
+      </div>
+
+     </div>
+
+    </div>
+
+   </section>
+
+
+   <!-- SAY -->
+
+   <section id="say" class="page">
+
+    <div class="pageTitle">
+     <h1>Bot Say</h1>
+     <p>Gửi tin nhắn bằng bot.</p>
+    </div>
+
+    <div class="panel">
+
+     <div class="panelHead">
+      <h2>📢 Send Message</h2>
+     </div>
+
+     <div class="panelBody">
+
+      <select id="sayGuild"
+              class="select"
+              onchange="loadSayChannels()">
+      </select>
+
+      <select id="sayChannel"
+              class="select">
+       <option value="">Chọn channel...</option>
+      </select>
+
+      <textarea
+       id="sayMessage"
+       class="textarea"
+       placeholder="Nhập nội dung bot sẽ nói..."
+      ></textarea>
+
+      <div class="actions">
+
+       <button class="btn primary"
+               onclick="botSay()">
+        📢 SEND MESSAGE
+       </button>
+
+       <button class="btn secondary"
+               onclick="document.getElementById('sayMessage').value=''">
+        Clear
+       </button>
+
+      </div>
+
+     </div>
+
+    </div>
+
+   </section>
+
+
+   <!-- LOGS -->
+
+   <section id="logs" class="page">
+
+    <div class="pageTitle">
+     <h1>Logs</h1>
+     <p>Nhật ký hoạt động của dashboard.</p>
+    </div>
+
+    <div class="panel">
+
+     <div class="panelHead">
+      <h2>📜 Console</h2>
+
+      <button class="btn secondary"
+              onclick="clearLogs()">
+       Clear
+      </button>
+
+     </div>
+
+     <div class="panelBody">
+      <div id="log" class="log"></div>
+     </div>
+
+    </div>
+
+   </section>
+
+  </div>
+
+ </main>
+
+</div>
+
+
+<script>
+
+/*
+=====================================================
+ GKIET DISCORD BOT DASHBOARD
+ Token chỉ tồn tại trong RAM.
+ Không localStorage.
+ Không cookie.
+ Không gửi token tới server riêng.
+=====================================================
+*/
+
+let BOT_TOKEN = null;
+let BOT = null;
+let GUILDS = [];
+let CHANNEL_CACHE = {};
+
+const API = "https://discord.com/api/v10";
+
+
+function log(message,type="info"){
+
+ const box=document.getElementById("log");
+
+ const time=new Date().toLocaleTimeString();
+
+ const line=document.createElement("div");
+
+ line.className=type;
+
+ line.textContent=`[${time}] ${message}`;
+
+ box.appendChild(line);
+
+ box.scrollTop=box.scrollHeight;
+}
+
+
+function clearLogs(){
+
+ document.getElementById("log").innerHTML="";
+
+}
+
+
+async function discord(path,options={}){
+
+ if(!BOT_TOKEN)
+  throw new Error("Bot token chưa được nhập.");
+
+ const headers={
+  "Authorization":`Bot ${BOT_TOKEN}`,
+  "Content-Type":"application/json",
+  ...(options.headers||{})
+ };
+
+ const start=performance.now();
+
+ const response=await fetch(
+  API+path,
+  {
+   ...options,
+   headers
+  }
+ );
+
+ const latency=Math.round(performance.now()-start);
+
+ document.getElementById("statLatency").textContent=
+  latency+" ms";
+
+ let data=null;
+
+ const text=await response.text();
+
+ try{
+  data=text?JSON.parse(text):null;
+ }catch{
+  data=text;
+ }
+
+ if(!response.ok){
+
+  let message=
+   data?.message ||
+   `HTTP ${response.status}`;
+
+  throw new Error(message);
+ }
+
+ return data;
+}
+
+
+/* CONNECT */
+
+async function connectBot(){
+
+ const input=document.getElementById("token");
+
+ const token=input.value.trim();
+
+ const error=document.getElementById("loginError");
+
+ error.style.display="none";
+
+ if(!token){
+
+  error.textContent="Vui lòng nhập bot token.";
+
+  error.style.display="block";
+
+  return;
+ }
+
+ /*
+   Token chỉ nằm trong biến JS.
+   Không localStorage.
+   Không sessionStorage.
+ */
+
+ BOT_TOKEN=token;
+
+ try{
+
+  log("Đang kết nối Discord...");
+
+  BOT=await discord("/users/@me");
+
+  document.getElementById("loginScreen")
+   .classList.add("hidden");
+
+  document.getElementById("app")
+   .classList.remove("hidden");
+
+  document.getElementById("botName")
+   .textContent=BOT.username;
+
+  document.getElementById("botTag")
+   .textContent=
+    BOT.discriminator &&
+    BOT.discriminator!=="0"
+     ? "#"+BOT.discriminator
+     : "Discord Bot";
+
+  document.getElementById("infoUsername")
+   .textContent=BOT.username;
+
+  document.getElementById("infoId")
+   .textContent=BOT.id;
+
+  document.getElementById("infoApp")
+   .textContent=BOT.bot
+    ?"Bot Account"
+    :"Application";
+
+  document.getElementById("statusDot")
+   .classList.add("on");
+
+  document.getElementById("statusText")
+   .textContent="Connected";
+
+  document.getElementById("statStatus")
+   .textContent="ONLINE";
+
+  log(
+   `Connected as ${BOT.username} (${BOT.id})`,
+   "ok"
+  );
+
+  await loadAll();
+
+ }catch(err){
+
+  BOT_TOKEN=null;
+
+  error.textContent=
+   "Không thể kết nối: "+err.message;
+
+  error.style.display="block";
+
+  log(
+   "Connection failed: "+err.message,
+   "err"
+  );
+
+ }
+
+}
+
+
+/* LOAD ALL */
+
+async function loadAll(){
+
+ try{
+
+  await loadGuilds();
+
+  updateStats();
+
+ }catch(err){
+
+  log(
+   "Load error: "+err.message,
+   "err"
+  );
+
+ }
+
+}
+
+
+/* GUILDS */
+
+async function loadGuilds(){
+
+ const list=document.getElementById("guildList");
+
+ list.innerHTML=
+  `<div class="item">Đang tải...</div>`;
+
+ try{
+
+  GUILDS=await discord("/users/@me/guilds");
+
+  list.innerHTML="";
+
+  if(!GUILDS.length){
+
+   list.innerHTML=
+    `<div class="item">
+      Bot chưa tham gia server nào.
+     </div>`;
+
+  }
+
+  for(const guild of GUILDS){
+
+   const item=document.createElement("div");
+
+   item.className="item";
+
+   item.innerHTML=`
+    <div class="itemLeft">
+     <div class="icon">🏢</div>
+     <div>
+      <div class="itemName">
+       ${escapeHTML(guild.name)}
+      </div>
+      <div class="itemSub">
+       ID: ${guild.id}
+      </div>
+     </div>
+    </div>
+
+    <span class="badge">
+     ${guild.owner ? "OWNER" : "BOT"}
+    </span>
+   `;
+
+   list.appendChild(item);
+
+  }
+
+  populateGuildSelects();
+
+  log(
+   `Loaded ${GUILDS.length} guild(s)`,
+   "ok"
+  );
+
+ }catch(err){
+
+  list.innerHTML=
+   `<div class="item">
+     Không thể tải guilds: ${escapeHTML(err.message)}
+    </div>`;
+
+  log(
+   "Guild error: "+err.message,
+   "err"
+  );
+
+ }
+
+ updateStats();
+
+}
+
+
+/* SELECT GUILDS */
+
+function populateGuildSelects(){
+
+ const ids=[
+  "channelGuild",
+  "sayGuild"
+ ];
+
+ for(const id of ids){
+
+  const select=document.getElementById(id);
+
+  select.innerHTML=
+   `<option value="">Chọn server...</option>`;
+
+  GUILDS.forEach(g=>{
+
+   const option=document.createElement("option");
+
+   option.value=g.id;
+
+   option.textContent=g.name;
+
+   select.appendChild(option);
+
+  });
+
+ }
+
+}
+
+
+/* CHANNELS */
+
+async function loadChannels(){
+
+ const guildId=
+  document.getElementById("channelGuild").value;
+
+ const list=
+  document.getElementById("channelList");
+
+ if(!guildId){
+
+  list.innerHTML=
+   `<div class="item">
+     Chọn server trước.
+    </div>`;
+
+  return;
+ }
+
+ list.innerHTML=
+  `<div class="item">Đang tải channels...</div>`;
+
+ try{
+
+  let channels=CHANNEL_CACHE[guildId];
+
+  if(!channels){
+
+   channels=
+    await discord(
+     `/guilds/${guildId}/channels`
+    );
+
+   CHANNEL_CACHE[guildId]=channels;
+
+  }
+
+  list.innerHTML="";
+
+  const textChannels=
+   channels.filter(
+    c=>c.type===0 || c.type===5
+   );
+
+  if(!textChannels.length){
+
+   list.innerHTML=
+    `<div class="item">
+      Không có text channel.
+     </div>`;
+
+  }
+
+  textChannels.forEach(c=>{
+
+   const item=document.createElement("div");
+
+   item.className="item";
+
+   item.innerHTML=`
+    <div class="itemLeft">
+     <div class="icon">
+      ${c.type===5?"📢":"💬"}
+     </div>
+     <div>
+      <div class="itemName">
+       # ${escapeHTML(c.name)}
+      </div>
+      <div class="itemSub">
+       ID: ${c.id}
+      </div>
+     </div>
+    </div>
+
+    <span class="badge">
+     ${c.type===5?"Announcement":"Text"}
+    </span>
+   `;
+
+   list.appendChild(item);
+
+  });
+
+  log(
+   `Loaded ${textChannels.length} channels`,
+   "ok"
+  );
+
+ }catch(err){
+
+  list.innerHTML=
+   `<div class="item">
+    Error: ${escapeHTML(err.message)}
+   </div>`;
+
+  log(
+   "Channel error: "+err.message,
+   "err"
+  );
+
+ }
+
+ updateStats();
+
+}
+
+
+/* SAY CHANNELS */
+
+async function loadSayChannels(){
+
+ const guildId=
+  document.getElementById("sayGuild").value;
+
+ const select=
+  document.getElementById("sayChannel");
+
+ select.innerHTML=
+  `<option value="">Đang tải...</option>`;
+
+ if(!guildId){
+
+  select.innerHTML=
+   `<option value="">Chọn server...</option>`;
+
+  return;
+ }
+
+ try{
+
+  let channels=CHANNEL_CACHE[guildId];
+
+  if(!channels){
+
+   channels=
+    await discord(
+     `/guilds/${guildId}/channels`
+    );
+
+   CHANNEL_CACHE[guildId]=channels;
+
+  }
+
+  select.innerHTML=
+   `<option value="">Chọn channel...</option>`;
+
+  channels
+   .filter(c=>c.type===0 || c.type===5)
+   .sort((a,b)=>
+    (a.position||0)-(b.position||0)
+   )
+   .forEach(c=>{
+
+    const option=
+     document.createElement("option");
+
+    option.value=c.id;
+
+    option.textContent="# "+c.name;
+
+    select.appendChild(option);
+
+   });
+
+ }catch(err){
+
+  select.innerHTML=
+   `<option value="">
+    ${escapeHTML(err.message)}
+   </option>`;
+
+ }
+
+}
+
+
+/* SEND MESSAGE */
+
+async function botSay(){
+
+ const channel=
+  document.getElementById("sayChannel").value;
+
+ const message=
+  document.getElementById("sayMessage").value.trim();
+
+ if(!channel){
+
+  alert("Hãy chọn channel.");
+
+  return;
+ }
+
+ if(!message){
+
+  alert("Hãy nhập nội dung.");
+
+  return;
+ }
+
+ if(message.length>2000){
+
+  alert("Discord giới hạn message tối đa 2000 ký tự.");
+
+  return;
+ }
+
+ try{
+
+  await discord(
+   `/channels/${channel}/messages`,
+   {
+    method:"POST",
+    body:JSON.stringify({
+     content:message
+    })
+   }
+  );
+
+  document.getElementById("sayMessage").value="";
+
+  log(
+   `Bot sent message to channel ${channel}`,
+   "ok"
+  );
+
+  alert("Đã gửi message.");
+
+ }catch(err){
+
+  log(
+   "Send message error: "+err.message,
+   "err"
+  );
+
+  alert(
+   "Không gửi được: "+err.message
+  );
+
+ }
+
+}
+
+
+/* STATS */
+
+function updateStats(){
+
+ document.getElementById("statServers")
+  .textContent=GUILDS.length;
+
+ let channels=0;
+
+ Object.values(CHANNEL_CACHE)
+  .forEach(arr=>{
+   channels+=
+    arr.filter(c=>c.type===0 || c.type===5).length;
+  });
+
+ document.getElementById("statChannels")
+  .textContent=channels;
+
+}
+
+
+/* PAGE */
+
+function page(id,button){
+
+ document.querySelectorAll(".page")
+  .forEach(p=>p.classList.remove("active"));
+
+ document.getElementById(id)
+  .classList.add("active");
+
+ document.querySelectorAll(".nav button")
+  .forEach(b=>b.classList.remove("active"));
+
+ if(button)
+  button.classList.add("active");
+
+ if(id==="channels"){
+  loadChannels();
+ }
+
+ if(id==="say"){
+  loadSayChannels();
+ }
+
+}
+
+
+/* LOGOUT */
+
+function disconnect(){
+
+ BOT_TOKEN=null;
+ BOT=null;
+ GUILDS=[];
+ CHANNEL_CACHE={};
+
+ document.getElementById("app")
+  .classList.add("hidden");
+
+ document.getElementById("loginScreen")
+  .classList.remove("hidden");
+
+ document.getElementById("token")
+  .value="";
+
+ document.getElementById("statusDot")
+  .classList.remove("on");
+
+ document.getElementById("statusText")
+  .textContent="Disconnected";
+
+ document.getElementById("statStatus")
+  .textContent="OFFLINE";
+
+ log("Disconnected","info");
+
+}
+
+
+/* ESCAPE HTML */
+
+function escapeHTML(value){
+
+ return String(value)
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#039;");
+
+}
+
+
+/* ENTER TO LOGIN */
+
+document
+ .getElementById("token")
+ .addEventListener("keydown",e=>{
+
+  if(e.key==="Enter")
+   connectBot();
+
+ });
+
+
+log("Dashboard initialized","info");
+
+</script>
+
+</body>
+  </html>
